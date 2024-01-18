@@ -23,7 +23,7 @@ char* UserPrompt(){
 
     if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
         printf("\n");
-        exit(1);
+        exit(0);
     }
 
     return input;

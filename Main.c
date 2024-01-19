@@ -14,11 +14,18 @@ int main(){
             char commands[50][511];
             char* token=strtok(input, delimiters);
             int i=0;
+            
             while(token!=NULL){
-                printf("Command entered: %s\n",token);
+                if((strcmp(token,"\n")!=0)){
+                    printf("\nCommand entered: %s",token);                  
+                }
+                else{
+                    printf("\n");
+                }
+
                 strcpy(commands[i], token);
                 i++;
-                token=strtok(NULL, delimiters);
+                token=strtok(NULL, delimiters);  
             }
         }
     }

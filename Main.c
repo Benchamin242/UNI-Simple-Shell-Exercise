@@ -3,7 +3,7 @@
 #include <string.h>
 
 char* UserPrompt();
-char* delimiters=" \t<>|;&";
+char* delimiters=" \t<>|;&\n";
 
 int main(){
     while(1){
@@ -14,11 +14,19 @@ int main(){
             char commands[50][511];
             char* token=strtok(input, delimiters);
             int i=0;
+
             while(token!=NULL){
-                printf("Command entered: %s\n",token);
+                if((strcmp(token,"\n")!=0)){
+                    printf("Command entered: '%s'\n",token);                  
+                }
+                else{
+                    //To keep the output consistent 
+                    printf("\n");
+                }
+
                 strcpy(commands[i], token);
                 i++;
-                token=strtok(NULL, delimiters);
+                token=strtok(NULL, delimiters);  
             }
         }
     }

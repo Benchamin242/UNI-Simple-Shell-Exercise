@@ -45,3 +45,19 @@ char* UserPrompt(){
 
     return input;
 }
+
+//Helper function to fork and exec
+void forkAndExec(char commands[][]){
+    __pid_t p=fork();
+    if(p<0){
+        printf("Fork Fail");
+    }
+    else if(p==0)
+    {
+        execvp();
+    }
+    else{
+        //ensures child process will execute first
+        wait(NULL);
+    }
+}

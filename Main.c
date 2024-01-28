@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>  
+#include <sys/types.h>  
+#include <sys/wait.h>  
+
 
 char* UserPrompt();
+void forkAndExec(char commands[50][511]);
 char* delimiters=" \t<>|;&\n";
 
 int main(){
@@ -28,6 +33,8 @@ int main(){
                 i++;
                 token=strtok(NULL, delimiters);  
             }
+
+            forkAndExec(commands);
         }
     }
 }
@@ -47,14 +54,39 @@ char* UserPrompt(){
 }
 
 //Helper function to fork and exec
-void forkAndExec(char commands[][]){
+void forkAndExec(char commands[50][511]){
     __pid_t p=fork();
     if(p<0){
         printf("Fork Fail");
     }
     else if(p==0)
     {
-        execvp();
+        /*execvp(commands[0], commands);
+        perror("execvp");  // Print an error message if execvp fails
+        exit(EXIT_FAILURE);  // Terminate child process upon execvp failure */
+
+        //loops through commands in to an array of pointers argv
+        char *argv[51];  
+        for (int i = 0; i < 50; ++i) {
+            argv[i] = commands[i];
+            if (commands[i][0] == '\0') {
+                break;  
+            }
+        }
+        argv[50] = NULL;
+
+        //argv input checker 
+        for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
+            printf("Argument %d: %s\n", i, argv[i]);
+            }
+
+
+        execvp(argv[0], argv);
+        perror("execvp");  
+        exit(EXIT_FAILURE); 
+        
+
+    
     }
     else{
         //ensures child process will execute first

@@ -16,7 +16,7 @@ int main(){
         if (!(strcmp(input,"\n")==0))
         {
             //tokenizes string and stores it
-            char commands[50][511];
+            char commands[50][511] = {""};
             char* token=strtok(input, delimiters);
             int i=0;
 

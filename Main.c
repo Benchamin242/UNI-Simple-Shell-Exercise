@@ -4,6 +4,7 @@
 #include <unistd.h>  
 #include <sys/types.h>  
 #include <sys/wait.h>  
+#include <errno.h>
 
 
 char* UserPrompt();
@@ -66,27 +67,29 @@ void forkAndExec(char commands[50][511]){
         exit(EXIT_FAILURE);  // Terminate child process upon execvp failure */
 
         //loops through commands in to an array of pointers argv
-        char *argv[51];  
+        char *argv[51] = {""}; 
+
         for (int i = 0; i < 50; ++i) {
             argv[i] = commands[i];
             if (commands[i][0] == '\0') {
                 break;  
             }
         }
-        argv[50] = NULL;
 
         //argv input checker 
         for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
             printf("Argument %d: %s\n", i, argv[i]);
-            }
-
+        }
 
         execvp(argv[0], argv);
-        perror("execvp");  
-        exit(EXIT_FAILURE); 
-        
 
-    
+        if(errno!=0){
+            perror("execvp");  
+            printf("Value of errno: %d\n", errno); 
+            exit(EXIT_FAILURE); 
+        }
+
+        exit(EXIT_SUCCESS); 
     }
     else{
         //ensures child process will execute first

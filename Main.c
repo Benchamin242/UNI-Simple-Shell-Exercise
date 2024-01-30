@@ -9,6 +9,9 @@
 
 char* UserPrompt();
 void forkAndExec(char commands[50][511]);
+int internalCommand(char* argv[51]);
+void getPath();
+void setPath(char* pathString);
 char* delimiters=" \t<>|;&\n";
 
 int main(){
@@ -118,4 +121,15 @@ int internalCommand(char* argv[51]){
         return 1;
     }
     return 0;
+}
+
+//Runs the 'getpath' internal command
+void getPath(){
+    printf("%s\n",getenv("PATH"));
+}
+
+//Runs the 'setpath' internal command
+void setPath(char* pathString){
+    setenv("PATH",pathString,1);
+    getPath();
 }

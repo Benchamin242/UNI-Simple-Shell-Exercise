@@ -76,12 +76,24 @@ void forkAndExec(char commands[50][511]){
             }
         }
 
+        int argCount = -1;
+
         //argv input checker 
         for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
             printf("Argument %d: %s\n", i, argv[i]);
-        }
 
-        execvp(argv[0], argv);
+            if(strcmp(argv[i],"")!=0){
+                argCount++;
+            }
+        }
+        printf("%d\n",argCount);
+
+       // if(argCount>0){
+            execvp(argv[0],argv);
+       // }
+       // else{
+            //exec(argv[0]);
+        //}
 
         if(errno!=0){
             perror("execvp");  

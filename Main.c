@@ -6,8 +6,7 @@
 #include <sys/wait.h>  
 #include <errno.h>
 
-
-char* UserPrompt();
+char* UserPrompt(char* savedPath);
 void forkAndExec(char commands[50][511]);
 int internalCommand(char* argv[51]);
 void getPath();
@@ -15,8 +14,15 @@ void setPath(char* pathString);
 char* delimiters=" \t<>|;&\n";
 
 int main(){
+    char* const savedPath = getenv("PATH");
+
+    chdir(getenv("HOME"));
+    char homeDir[30];
+    getcwd(homeDir,30);
+    printf("Shell started in: %s\n",homeDir);
+
     while(1){
-        char* input=UserPrompt();
+        char* input=UserPrompt(savedPath);
         if (!(strcmp(input,"\n")==0))
         {
             //tokenizes string and stores it
@@ -25,13 +31,13 @@ int main(){
             int i=0;
 
             while(token!=NULL){
-                if((strcmp(token,"\n")!=0)){
+                /*if((strcmp(token,"\n")!=0)){
                     printf("Command entered: '%s'\n",token);                  
                 }
                 else{
                     //To keep the output consistent 
                     printf("\n");
-                }
+                }*/
 
                 strcpy(commands[i], token);
                 i++;
@@ -40,17 +46,20 @@ int main(){
 
             forkAndExec(commands);
         }
+        free(input);
     }
 }
 
 //Returns the users' input, or quits if 'exit' is inputted or CTRL+D is detected
-char* UserPrompt(){
+char* UserPrompt(char* savedPath){
     char* input=(char *)malloc(512 * sizeof(char));
     printf("\n|-o-| ");
     char* fgetsResult = fgets(input, 511, stdin);
 
     if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
-        printf("\n");
+        free(input);
+        setPath(savedPath);
+        printf("\nPATH reset to: %s\n\nGoodbye!\n",savedPath);
         exit(0);
     }
 
@@ -65,10 +74,6 @@ void forkAndExec(char commands[50][511]){
     }
     else if(p==0)
     {
-        /*execvp(commands[0], commands);
-        perror("execvp");  // Print an error message if execvp fails
-        exit(EXIT_FAILURE);  // Terminate child process upon execvp failure */
-
         //loops through commands in to an array of pointers argv
         char *argv[51] = {""}; 
 
@@ -94,7 +99,7 @@ void forkAndExec(char commands[50][511]){
         argv[argCount+1] = NULL;
 
         if(!internalCommand(argv)){
-        execvp(argv[0], argv);
+            execvp(argv[0], argv);
         }
 
         if(errno!=0){

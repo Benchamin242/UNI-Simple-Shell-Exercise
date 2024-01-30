@@ -88,6 +88,7 @@ void forkAndExec(char commands[50][511]){
         }
         printf("%d\n",argCount);
         argv[strlen(argv[0]) - 1] = '\0';
+        argv[argCount+1] = NULL;
         execvp(argv[0], argv);
 
         if(errno!=0){

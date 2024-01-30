@@ -86,14 +86,16 @@ void forkAndExec(char commands[50][511]){
                 argCount++;
             }
         }
-        printf("%d\n",argCount);
+
         argv[strlen(argv[0]) - 1] = '\0';
         argv[argCount+1] = NULL;
+
+        if(!internalCommand(argv)){
         execvp(argv[0], argv);
+        }
 
         if(errno!=0){
             perror("execvp");  
-            printf("Value of errno: %d\n", errno); 
             exit(EXIT_FAILURE); 
         }
 
@@ -103,4 +105,17 @@ void forkAndExec(char commands[50][511]){
         //ensures child process will execute first
         wait(NULL);
     }
+}
+
+//If argv contains an internal command, this executes it and returns 1. If not, returns 0.
+int internalCommand(char* argv[51]){
+    if(strcmp(argv[0],"getpath")==0){
+        getPath();
+        return 1;
+    }
+    else if(strcmp(argv[0],"setpath")==0){
+        setPath(argv[1]);
+        return 1;
+    }
+    return 0;
 }

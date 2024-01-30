@@ -87,13 +87,8 @@ void forkAndExec(char commands[50][511]){
             }
         }
         printf("%d\n",argCount);
-
-       // if(argCount>0){
-            execvp(argv[0],argv);
-       // }
-       // else{
-            //exec(argv[0]);
-        //}
+        argv[strlen(argv[0]) - 1] = '\0';
+        execvp(argv[0], argv);
 
         if(errno!=0){
             perror("execvp");  

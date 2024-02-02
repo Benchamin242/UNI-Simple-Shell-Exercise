@@ -17,8 +17,8 @@ int main(){
     char* const savedPath = getenv("PATH");
 
     chdir(getenv("HOME"));
-    char homeDir[30];
-    getcwd(homeDir,30);
+    char homeDir[50];
+    getcwd(homeDir,50);
     printf("Shell started in: %s\n",homeDir);
 
     while(1){
@@ -31,14 +31,6 @@ int main(){
             int i=0;
 
             while(token!=NULL){
-                /*if((strcmp(token,"\n")!=0)){
-                    printf("Command entered: '%s'\n",token);                  
-                }
-                else{
-                    //To keep the output consistent 
-                    printf("\n");
-                }*/
-
                 strcpy(commands[i], token);
                 i++;
                 token=strtok(NULL, delimiters);  
@@ -59,8 +51,8 @@ char* UserPrompt(char* savedPath){
     if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
         free(input);
         setPath(savedPath);
-        printf("\nPATH reset to: %s\n\nGoodbye!\n",savedPath);
-        exit(0);
+        printf("\nGoodbye!\n");
+        exit(EXIT_SUCCESS);
     }
 
     return input;
@@ -136,5 +128,6 @@ void getPath(){
 //Runs the 'setpath' internal command
 void setPath(char* pathString){
     setenv("PATH",pathString,1);
+    printf("\nPATH set to:\n");
     getPath();
 }

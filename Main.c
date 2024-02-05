@@ -150,8 +150,8 @@ void changeDirectory(char* argv[51]){
     }
     else{
         if(chdir(argv[1])!=0) {
-        //if cd was unsuccessful error is printed
-        perror("chdir");
+            //if cd was unsuccessful error is printed
+            perror("chdir");
         }
     }
 }

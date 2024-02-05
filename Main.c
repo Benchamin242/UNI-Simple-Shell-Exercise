@@ -6,7 +6,6 @@
 #include <sys/wait.h>  
 #include <errno.h>
 
-char* UserPrompt(char* savedPath);
 void forkAndExec(char commands[50][511]);
 int internalCommand(char* argv[51]);
 void getPath();
@@ -20,22 +19,28 @@ int main(){
     chdir(getenv("HOME"));
 
     while(1){
+        //Gets the current working directory 
         char currentDir[50];
         getcwd(currentDir,50);
-        char* input=(char *)malloc(512 * sizeof(char));
-        printf("\n%s |-o-| ",currentDir);
-        char* fgetsResult = fgets(input, 511, stdin);
 
+        //Prints the user promt
+        printf("\n%s |-o-| ",currentDir);
+
+        //Gets the user input
+        char* input="";
+        char* fgetsResult = fgets(input, 511, stdin);
+        
+        //Exits the shell when CTRL+D or 'exit' is entered
         if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
-            free(input);
             setPath(savedPath);
             printf("\nGoodbye!\n");
             exit(EXIT_SUCCESS);
         }
 
+        //Makes sure the input isn't just a '\n'
         if (!(strcmp(input,"\n")==0))
         {
-            //tokenizes string and stores it
+            //Tokenizes string and stores it
             char commands[50][511] = {""};
             char* token=strtok(input, delimiters);
             int i=0;
@@ -48,7 +53,6 @@ int main(){
 
             forkAndExec(commands);
         }
-        free(input);
     }
 }
 
@@ -76,6 +80,7 @@ void forkAndExec(char commands[50][511]){
         }
     }
 
+    //Terminates the command string and array 
     argv[0][strlen(argv[0])] = '\0';
     argv[argCount] = NULL;   
 	
@@ -85,7 +90,7 @@ void forkAndExec(char commands[50][511]){
 		if(p<0){
 		    printf("Fork Fail");
 		}
-		else if(p==0)
+		else if(p==0)//If child process
 		{
 		    execvp(argv[0], argv);
 

@@ -60,51 +60,54 @@ char* UserPrompt(char* savedPath){
 
 //Helper function to fork and exec
 void forkAndExec(char commands[50][511]){
-    __pid_t p=fork();
-    if(p<0){
-        printf("Fork Fail");
+
+    //loops through commands in to an array of pointers argv
+    char *argv[51] = {""}; 
+
+    for (int i = 0; i < 50; ++i) {
+        argv[i] = commands[i];
+        if (commands[i][0] == '\0') {
+            break;  
+        }
     }
-    else if(p==0)
-    {
-        //loops through commands in to an array of pointers argv
-        char *argv[51] = {""}; 
 
-        for (int i = 0; i < 50; ++i) {
-            argv[i] = commands[i];
-            if (commands[i][0] == '\0') {
-                break;  
-            }
+    int argCount = -1;
+
+    //argv input checker 
+    for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
+        printf("Argument %d: %s\n", i, argv[i]);
+
+        if(strcmp(argv[i],"")!=0){
+            argCount++;
         }
-
-        int argCount = -1;
-
-        //argv input checker 
-        for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
-            printf("Argument %d: %s\n", i, argv[i]);
-
-            if(strcmp(argv[i],"")!=0){
-                argCount++;
-            }
-        }
-
-        argv[strlen(argv[0]) - 1] = '\0';
-        argv[argCount+1] = NULL;
-
-        if(!internalCommand(argv)){
-            execvp(argv[0], argv);
-        }
-
-        if(errno!=0){
-            perror("execvp");  
-            exit(EXIT_FAILURE); 
-        }
-
-        exit(EXIT_SUCCESS); 
     }
-    else{
-        //ensures child process will execute first
-        wait(NULL);
-    }
+
+    argv[strlen(argv[0]) - 1] = '\0';
+    argv[argCount+1] = NULL;
+
+    if(!internalCommand(argv)){
+        __pid_t p=fork();
+		if(p<0){
+		    printf("Fork Fail");
+		}
+		else if(p==0)
+		{
+
+		    execvp(argv[0], argv);
+		    
+
+		    if(errno!=0){
+		        perror("execvp");  
+		        exit(EXIT_FAILURE); 
+		    }
+
+		    exit(EXIT_SUCCESS); 
+		}
+		else{
+		    //ensures child process will execute first
+		    wait(NULL);
+		}
+	}
 }
 
 //If argv contains an internal command, this executes it and returns 1. If not, returns 0.

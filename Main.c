@@ -27,11 +27,12 @@ int main(){
         printf("\n%s |-o-| ",currentDir);
 
         //Gets the user input
-        char* input="";
+        char* input=(char *)malloc(512 * sizeof(char));
         char* fgetsResult = fgets(input, 511, stdin);
         
         //Exits the shell when CTRL+D or 'exit' is entered
         if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
+            free(input);
             setPath(savedPath);
             printf("\nGoodbye!\n");
             exit(EXIT_SUCCESS);
@@ -53,6 +54,8 @@ int main(){
 
             forkAndExec(commands);
         }
+        
+        free(input);
     }
 }
 

@@ -84,7 +84,8 @@ void forkAndExec(char commands[50][511]){
 
     argv[strlen(argv[0]) - 1] = '\0';
     argv[argCount+1] = NULL;
-
+	
+	//Tries to run the internal command. If internalCommand returns 0, fork and exec. 
     if(!internalCommand(argv)){
         __pid_t p=fork();
 		if(p<0){

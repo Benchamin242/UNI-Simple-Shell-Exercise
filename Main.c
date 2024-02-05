@@ -6,8 +6,7 @@
 #include <sys/wait.h>  
 #include <errno.h>
 
-
-char* UserPrompt();
+char* UserPrompt(char* savedPath);
 void forkAndExec(char commands[50][511]);
 int internalCommand(char* argv[51]);
 void getPath();
@@ -16,8 +15,15 @@ void changeDirectory(char* argv[51]);
 char* delimiters=" \t<>|;&\n";
 
 int main(){
+    char* const savedPath = getenv("PATH");
+
+    chdir(getenv("HOME"));
+    char homeDir[50];
+    getcwd(homeDir,50);
+    printf("Shell started in: %s\n",homeDir);
+
     while(1){
-        char* input=UserPrompt();
+        char* input=UserPrompt(savedPath);
         if (!(strcmp(input,"\n")==0))
         {
             //tokenizes string and stores it
@@ -26,14 +32,6 @@ int main(){
             int i=0;
 
             while(token!=NULL){
-                if((strcmp(token,"\n")!=0)){
-                    printf("Command entered: '%s'\n",token);                  
-                }
-                else{
-                    //To keep the output consistent 
-                    printf("\n");
-                }
-
                 strcpy(commands[i], token);
                 i++;
                 token=strtok(NULL, delimiters);  
@@ -41,18 +39,21 @@ int main(){
 
             forkAndExec(commands);
         }
+        free(input);
     }
 }
 
 //Returns the users' input, or quits if 'exit' is inputted or CTRL+D is detected
-char* UserPrompt(){
+char* UserPrompt(char* savedPath){
     char* input=(char *)malloc(512 * sizeof(char));
     printf("\n|-o-| ");
     char* fgetsResult = fgets(input, 511, stdin);
 
     if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
-        printf("\n");
-        exit(0);
+        free(input);
+        setPath(savedPath);
+        printf("\nGoodbye!\n");
+        exit(EXIT_SUCCESS);
     }
 
     return input;
@@ -60,55 +61,55 @@ char* UserPrompt(){
 
 //Helper function to fork and exec
 void forkAndExec(char commands[50][511]){
-    __pid_t p=fork();
-    if(p<0){
-        printf("Fork Fail");
+
+    //loops through commands in to an array of pointers argv
+    char *argv[51] = {""}; 
+
+    for (int i = 0; i < 50; ++i) {
+        argv[i] = commands[i];
+        if (commands[i][0] == '\0') {
+            break;  
+        }
     }
-    else if(p==0)
-    {
-        /*execvp(commands[0], commands);
-        perror("execvp");  // Print an error message if execvp fails
-        exit(EXIT_FAILURE);  // Terminate child process upon execvp failure */
 
-        //loops through commands in to an array of pointers argv
-        char *argv[51] = {""}; 
+    int argCount = -1;
 
-        for (int i = 0; i < 50; ++i) {
-            argv[i] = commands[i];
-            if (commands[i][0] == '\0') {
-                break;  
-            }
+    //argv input checker 
+    for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
+        printf("Argument %d: %s\n", i, argv[i]);
+
+        if(strcmp(argv[i],"")!=0){
+            argCount++;
         }
-
-        int argCount = -1;
-
-        //argv input checker 
-        for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
-            printf("Argument %d: %s\n", i, argv[i]);
-
-            if(strcmp(argv[i],"")!=0){
-                argCount++;
-            }
-        }
-
-        argv[strlen(argv[0]) - 1] = '\0';
-        argv[argCount+1] = NULL;
-
-        if(!internalCommand(argv)){
-            execvp(argv[0], argv);
-        }
-
-        if(errno!=0){
-            perror("execvp");  
-            exit(EXIT_FAILURE); 
-        }
-
-        exit(EXIT_SUCCESS); 
     }
-    else{
-        //ensures child process will execute first
-        wait(NULL);
-    }
+
+    argv[strlen(argv[0]) - 1] = '\0';
+    argv[argCount+1] = NULL;
+	
+	//Tries to run the internal command. If internalCommand returns 0, fork and exec. 
+    if(!internalCommand(argv)){
+        __pid_t p=fork();
+		if(p<0){
+		    printf("Fork Fail");
+		}
+		else if(p==0)
+		{
+
+		    execvp(argv[0], argv);
+		    
+
+		    if(errno!=0){
+		        perror("execvp");  
+		        exit(EXIT_FAILURE); 
+		    }
+
+		    exit(EXIT_SUCCESS); 
+		}
+		else{
+		    //ensures child process will execute first
+		    wait(NULL);
+		}
+	}
 }
 
 //If argv contains an internal command, this executes it and returns 1. If not, returns 0.
@@ -136,6 +137,7 @@ void getPath(){
 //Runs the 'setpath' internal command
 void setPath(char* pathString){
     setenv("PATH",pathString,1);
+    printf("\nPATH set to:\n");
     getPath();
 }
 

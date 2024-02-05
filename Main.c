@@ -18,12 +18,21 @@ int main(){
     char* const savedPath = getenv("PATH");
 
     chdir(getenv("HOME"));
-    char homeDir[50];
-    getcwd(homeDir,50);
-    printf("Shell started in: %s\n",homeDir);
 
     while(1){
-        char* input=UserPrompt(savedPath);
+        char currentDir[50];
+        getcwd(currentDir,50);
+        char* input=(char *)malloc(512 * sizeof(char));
+        printf("\n%s |-o-| ",currentDir);
+        char* fgetsResult = fgets(input, 511, stdin);
+
+        if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
+            free(input);
+            setPath(savedPath);
+            printf("\nGoodbye!\n");
+            exit(EXIT_SUCCESS);
+        }
+
         if (!(strcmp(input,"\n")==0))
         {
             //tokenizes string and stores it
@@ -43,22 +52,6 @@ int main(){
     }
 }
 
-//Returns the users' input, or quits if 'exit' is inputted or CTRL+D is detected
-char* UserPrompt(char* savedPath){
-    char* input=(char *)malloc(512 * sizeof(char));
-    printf("\n|-o-| ");
-    char* fgetsResult = fgets(input, 511, stdin);
-
-    if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
-        free(input);
-        setPath(savedPath);
-        printf("\nGoodbye!\n");
-        exit(EXIT_SUCCESS);
-    }
-
-    return input;
-}
-
 //Helper function to fork and exec
 void forkAndExec(char commands[50][511]){
 
@@ -72,19 +65,19 @@ void forkAndExec(char commands[50][511]){
         }
     }
 
-    int argCount = -1;
+    int argCount = 0;
 
     //argv input checker 
     for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
-        printf("Argument %d: %s\n", i, argv[i]);
+        //printf("Argument %d: '%s'\n", i, argv[i]);
 
         if(strcmp(argv[i],"")!=0){
             argCount++;
         }
     }
 
-    argv[strlen(argv[0]) - 1] = '\0';
-    argv[argCount+1] = NULL;
+    argv[0][strlen(argv[0])] = '\0';
+    argv[argCount] = NULL;   
 	
 	//Tries to run the internal command. If internalCommand returns 0, fork and exec. 
     if(!internalCommand(argv)){
@@ -94,9 +87,7 @@ void forkAndExec(char commands[50][511]){
 		}
 		else if(p==0)
 		{
-
 		    execvp(argv[0], argv);
-		    
 
 		    if(errno!=0){
 		        perror("execvp");  

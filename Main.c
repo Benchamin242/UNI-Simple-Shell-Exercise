@@ -12,6 +12,7 @@ void forkAndExec(char commands[50][511]);
 int internalCommand(char* argv[51]);
 void getPath();
 void setPath(char* pathString);
+void changeDirectory(char* argv[51]);
 char* delimiters=" \t<>|;&\n";
 
 int main(){
@@ -94,7 +95,7 @@ void forkAndExec(char commands[50][511]){
         argv[argCount+1] = NULL;
 
         if(!internalCommand(argv)){
-        execvp(argv[0], argv);
+            execvp(argv[0], argv);
         }
 
         if(errno!=0){
@@ -120,6 +121,10 @@ int internalCommand(char* argv[51]){
         setPath(argv[1]);
         return 1;
     }
+    else if(strcmp(argv[0],"cd")==0){
+        changeDirectory(argv);
+        return 1;
+    }
     return 0;
 }
 
@@ -132,4 +137,21 @@ void getPath(){
 void setPath(char* pathString){
     setenv("PATH",pathString,1);
     getPath();
+}
+
+//Change directory function
+void changeDirectory(char* argv[51]){
+    //if no other arguments provided cd changes to home directory
+    if(argv[1]==NULL){
+        if(chdir(getenv("HOME"))!=0) {
+            //if cd was unsuccessful error is printed
+            perror("chdir");
+        }
+    }
+    else{
+        if(chdir(argv[1])!=0) {
+        //if cd was unsuccessful error is printed
+        perror("chdir");
+        }
+    }
 }

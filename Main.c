@@ -98,7 +98,7 @@ void forkAndExec(char commands[50][511]){
 		    execvp(argv[0], argv);
 
 		    if(errno!=0){
-		        perror("execvp");  
+		        perror(argv[0]);  
 		        exit(EXIT_FAILURE); 
 		    }
 

@@ -146,13 +146,13 @@ void changeDirectory(char* argv[51]){
     if(argv[1]==NULL){
         if(chdir(getenv("HOME"))!=0) {
             //if cd was unsuccessful error is printed
-            perror("chdir");
+            perror("cd");
         }
     }
     else{
         if(chdir(argv[1])!=0) {
             //if cd was unsuccessful error is printed
-            perror("chdir");
+            perror("cd");
         }
     }
 }

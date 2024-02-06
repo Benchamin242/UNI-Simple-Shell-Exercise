@@ -6,6 +6,10 @@
 #include <sys/wait.h>  
 #include <errno.h>
 
+//Used to colour the output of the terminal
+#define setTerminalBlue "\x1b[34m"
+#define resetTerminalColour "\x1b[0m"
+
 void forkAndExec(char commands[50][511]);
 int internalCommand(char* argv[51]);
 void getPath();
@@ -24,7 +28,7 @@ int main(){
         getcwd(currentDir,50);
 
         //Prints the user promt
-        printf("\n%s |-o-| ",currentDir);
+        printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
 
         //Gets the user input
         char* input=(char *)malloc(512 * sizeof(char));
@@ -33,8 +37,9 @@ int main(){
         //Exits the shell when CTRL+D or 'exit' is entered
         if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
             free(input);
+            printf("\n");
             setPath(savedPath);
-            printf("\nGoodbye!\n");
+            printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
             exit(EXIT_SUCCESS);
         }
 
@@ -135,8 +140,13 @@ void getPath(){
 
 //Runs the 'setpath' internal command
 void setPath(char* pathString){
+    if(pathString == NULL){
+        printf("setpath: No such file or directory\n");
+        return;
+    }
+
     setenv("PATH",pathString,1);
-    printf("\nPATH set to:\n");
+    printf(setTerminalBlue"PATH set to: "resetTerminalColour);
     getPath();
 }
 

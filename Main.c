@@ -29,7 +29,8 @@ void changeDirectory(char* argv[51]);
 char* delimiters=" \t<>|;&\n";
 void addToHistory(char *command);
 void displayHistory();
-void getCommandFromHistory(char *command[51]);
+void getCommandFromHistory(char* command[51]);
+char (*Tokeniser(char *command))[51];
 
 int main(){
     char* const savedPath = getenv("PATH");
@@ -214,20 +215,18 @@ void displayHistory(){
     }
 }
 
-void getCommandFromHistory(char *command[51]) {
+void getCommandFromHistory(char* command[51]) {
     int num;
-    // this doesnt fully work but i dont know why its meant to see which thype of command is sent then send it back to the start    of the internal command and loop through it there but it isnt sending it back
+
     if (strcmp(command[0], "!!") == 0) {
         if (historyCount > 0) {
-            internalCommand(history[historyCount - 1].commandLine); 
+            internalCommand(Tokeniser(history[historyCount - 1].commandLine)); 
         } else {
             printf("Error: No commands in history\n");
         }
     } else if (strcmp(command[1], "-") == 0) {
-        if (strlen(command[2]) > 0) {
-            num = atoi(command[2]);
-        } else if (strlen(command[3]) > 0) {
-            num = atoi(command[3]);
+        if (strlen(command[0]) > 0) {
+            num = atoi(*command);
         } else {
             printf("Error: Invalid history index\n");
             return;
@@ -237,12 +236,10 @@ void getCommandFromHistory(char *command[51]) {
             return;
         }
         printf("%d\n", num);
-        internalCommand(history[historyCount - num].commandLine); 
+        internalCommand(Tokeniser(history[historyCount - num].commandLine)); 
     } else {
-        if (strlen(command[1]) > 0) {
-            num = atoi(command[1]);
-        } else if (strlen(command[2]) > 0) {
-            num = atoi(command[2]);
+        if (strlen(command[0]) > 0) {
+            num = atoi(*command);
         } else {
             printf("Error: Invalid history index\n");
             return;
@@ -252,9 +249,23 @@ void getCommandFromHistory(char *command[51]) {
             return;
         }
         printf("%d\n", num);
-        internalCommand(history[num].commandLine); 
+        internalCommand(Tokeniser(history[num - 1].commandLine)); 
     }
 }
 
+char (*Tokeniser(char *command))[51] {
+    static char commands[50][511] = {""}; 
 
+    char *token = strtok(command, delimiters);
+    int i = 0;
 
+    while (token != NULL && i < 50) {
+        strcpy(commands[i], token);
+        i++;
+        token = strtok(NULL, delimiters);
+    }
+    
+    return commands;
+
+    forkAndExec(commands);
+}

@@ -21,7 +21,7 @@ int historyCount;
 
 int currentCommandNo = 0;
 
-void forkAndExec(char commands[50][511]);
+void forkAndExec(char* argv[51]);
 int internalCommand(char* argv[51]);
 void getPath();
 void setPath(char* pathString);
@@ -66,7 +66,7 @@ int main(){
 
             Tokeniser(input);
 
-            addToHistory(*commands);
+           
         }
         
         free(input);
@@ -74,32 +74,7 @@ int main(){
 }
 
 //Helper function to fork and exec
-void forkAndExec(char commands[50][511]){
-
-    //loops through commands in to an array of pointers argv
-    char *argv[51] = {""}; 
-
-    for (int i = 0; i < 50; ++i) {
-        argv[i] = commands[i];
-        if (commands[i][0] == '\0') {
-            break;  
-        }
-    }
-
-    int argCount = 0;
-
-    //argv input checker 
-    for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
-        //printf("Argument %d: '%s'\n", i, argv[i]);
-
-        if(strcmp(argv[i],"")!=0){
-            argCount++;
-        }
-    }
-
-    //Terminates the command string and array 
-    argv[0][strlen(argv[0])] = '\0';
-    argv[argCount] = NULL;   
+void forkAndExec(char* argv[51]){
     
     //Tries to run the internal command. If internalCommand returns 0, fork and exec. 
     if(!internalCommand(argv)){
@@ -145,6 +120,7 @@ int internalCommand(char* argv[51]){
     }
     else if(argv[0][0] == '!'){
         getCommandFromHistory(argv);
+        return 1;
     }
     return 0;
 }
@@ -219,7 +195,7 @@ void getCommandFromHistory(char* command[51]) {
         }
     } else if (strcmp(command[1], "-") == 0) {
         if (strlen(command[0]) > 0) {
-            num = atoi(*command);
+            num = atoi(command[1] + 1);
         } else {
             printf("Error: Invalid history index\n");
             return;
@@ -232,7 +208,7 @@ void getCommandFromHistory(char* command[51]) {
         Tokeniser(history[historyCount - num].commandLine); 
     } else {
         if (strlen(command[0]) > 0) {
-            num = atoi(*command);
+            num = atoi(command[1]);
         } else {
             printf("Error: Invalid history index\n");
             return;
@@ -248,20 +224,19 @@ void getCommandFromHistory(char* command[51]) {
 
 
 void Tokeniser(char *command) {
-    char* commands =(char *)malloc(512 * sizeof(char));
-    //static char commands[50][511] = {""}; 
+    //char* commands =(char *)malloc(512 * sizeof(char));
+    char commands[50][511] = {""}; 
 
     char *token = strtok(command, delimiters);
     int i = 0;
 
     while (token != NULL && i < 50) {
-        strcpy(commands, token);
+        strcpy(commands[i], token);
         i++;
         token = strtok(NULL, delimiters);
     }
 
-
-    //loops through commands in to an array of pointers argv
+        //loops through commands in to an array of pointers argv
     char *argv[51] = {""}; 
 
     for (int i = 0; i < 50; ++i) {
@@ -284,7 +259,9 @@ void Tokeniser(char *command) {
 
     //Terminates the command string and array 
     argv[0][strlen(argv[0])] = '\0';
-    argv[argCount] = NULL;  
-    
+    argv[argCount] = NULL; 
+
+    addToHistory(command);
+
     forkAndExec(argv);
 }

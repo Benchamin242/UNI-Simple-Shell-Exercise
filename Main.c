@@ -24,8 +24,8 @@ int main(){
 
     while(1){
         //Gets the current working directory 
-        char currentDir[50];
-        getcwd(currentDir,50);
+        char currentDir[150];
+        getcwd(currentDir,150);
 
         //Prints the user promt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);

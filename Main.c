@@ -30,7 +30,7 @@ char* delimiters=" \t<>|;&\n";
 void addToHistory(char *command);
 void displayHistory();
 void getCommandFromHistory(char* command[51]);
-char (*Tokeniser(char *command))[51];
+void Tokeniser(char *command);
 
 int main(){
     char* const savedPath = getenv("PATH");
@@ -63,17 +63,10 @@ int main(){
         {
             //Tokenizes string and stores it
             char commands[50][511] = {""};
-            char* token=strtok(input, delimiters);
-            int i=0;
 
-            while(token!=NULL){
-                strcpy(commands[i], token);
-                i++;
-                token=strtok(NULL, delimiters);  
-            }
+            Tokeniser(input);
+
             addToHistory(*commands);
-           
-            forkAndExec(commands);
         }
         
         free(input);
@@ -220,7 +213,7 @@ void getCommandFromHistory(char* command[51]) {
 
     if (strcmp(command[0], "!!") == 0) {
         if (historyCount > 0) {
-            internalCommand(Tokeniser(history[historyCount - 1].commandLine)); 
+            Tokeniser(history[historyCount - 1].commandLine); 
         } else {
             printf("Error: No commands in history\n");
         }
@@ -236,7 +229,7 @@ void getCommandFromHistory(char* command[51]) {
             return;
         }
         printf("%d\n", num);
-        internalCommand(Tokeniser(history[historyCount - num].commandLine)); 
+        Tokeniser(history[historyCount - num].commandLine); 
     } else {
         if (strlen(command[0]) > 0) {
             num = atoi(*command);
@@ -249,23 +242,49 @@ void getCommandFromHistory(char* command[51]) {
             return;
         }
         printf("%d\n", num);
-        internalCommand(Tokeniser(history[num - 1].commandLine)); 
+        Tokeniser(history[num - 1].commandLine); 
     }
 }
 
-char (*Tokeniser(char *command))[51] {
-    static char commands[50][511] = {""}; 
+
+void Tokeniser(char *command) {
+    char* commands =(char *)malloc(512 * sizeof(char));
+    //static char commands[50][511] = {""}; 
 
     char *token = strtok(command, delimiters);
     int i = 0;
 
     while (token != NULL && i < 50) {
-        strcpy(commands[i], token);
+        strcpy(commands, token);
         i++;
         token = strtok(NULL, delimiters);
     }
-    
-    return commands;
 
-    forkAndExec(commands);
+
+    //loops through commands in to an array of pointers argv
+    char *argv[51] = {""}; 
+
+    for (int i = 0; i < 50; ++i) {
+        argv[i] = commands[i];
+        if (commands[i][0] == '\0') {
+            break;  
+        }
+    }
+
+    int argCount = 0;
+
+    //argv input checker 
+    for (int i = 0; argv[i] != NULL && argv[i][0] != '\0'; ++i) {
+        //printf("Argument %d: '%s'\n", i, argv[i]);
+
+        if(strcmp(argv[i],"")!=0){
+            argCount++;
+        }
+    }
+
+    //Terminates the command string and array 
+    argv[0][strlen(argv[0])] = '\0';
+    argv[argCount] = NULL;  
+    
+    forkAndExec(argv);
 }

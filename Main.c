@@ -31,6 +31,7 @@ void addToHistory(char *command);
 void displayHistory();
 void getCommandFromHistory(char* command[51]);
 void Tokeniser(char *command);
+int getnum(int startPos, char str[51]);
 
 int main(){
     char* const savedPath = getenv("PATH");
@@ -64,12 +65,12 @@ int main(){
             //Tokenizes string and stores it
             char commands[50][511] = {""};
 
+            addToHistory(input);
+
             Tokeniser(input);
 
-           
         }
         
-        free(input);
     }
 }
 
@@ -159,7 +160,8 @@ void changeDirectory(char* argv[51]){
     }
 }
 
-void addToHistory(char *command){
+void addToHistory(char* command){
+if(command[0] != '!') {
     if(historyCount < 20){
         currentCommandNo++;
         history[historyCount].commandNumber = currentCommandNo;
@@ -176,6 +178,7 @@ void addToHistory(char *command){
         strcpy(history[19].commandLine, command);
     }
 }
+}
 
 void displayHistory(){
     // goes through all the current commands and displays them
@@ -185,41 +188,40 @@ void displayHistory(){
 }
 
 void getCommandFromHistory(char* command[51]) {
-    int num;
 
-    if (strcmp(command[0], "!!") == 0) {
+int num;
+
+if (strcmp(command[0], "!!") == 0) {
         if (historyCount > 0) {
+            
             Tokeniser(history[historyCount - 1].commandLine); 
+            return;
         } else {
             printf("Error: No commands in history\n");
-        }
-    } else if (strcmp(command[1], "-") == 0) {
-        if (strlen(command[0]) > 0) {
-            num = atoi(command[1] + 1);
-        } else {
-            printf("Error: Invalid history index\n");
             return;
         }
-        if (num <= 0 || num > historyCount) {
-            printf("Error: Invalid history index\n");
-            return;
-        }
-        printf("%d\n", num);
-        Tokeniser(history[historyCount - num].commandLine); 
-    } else {
-        if (strlen(command[0]) > 0) {
-            num = atoi(command[1]);
-        } else {
-            printf("Error: Invalid history index\n");
-            return;
-        }
-        if (num <= 0 || num > historyCount) {
-            printf("Error: Invalid history index\n");
-            return;
-        }
-        printf("%d\n", num);
-        Tokeniser(history[num - 1].commandLine); 
+}
+else if (command[0][1] == 45) {
+    num = getnum(2, command[0]);
+    if (num <= 0 || num > historyCount) {
+        printf("Error: Invalid history index\n");
+        return;
     }
+    
+    Tokeniser(history[historyCount - num].commandLine);
+
+}
+else {
+    num = getnum(1, command[0]);
+    if (num <= 0 || num > historyCount) {
+        printf("Error: Invalid history index\n");
+        return;
+    }
+    
+    Tokeniser(history[num - 1].commandLine); 
+    }
+        
+    return; 
 }
 
 
@@ -261,7 +263,28 @@ void Tokeniser(char *command) {
     argv[0][strlen(argv[0])] = '\0';
     argv[argCount] = NULL; 
 
-    addToHistory(command);
+    
 
     forkAndExec(argv);
+}
+
+int getnum(int startPos, char str[51]){
+    int num_chars = 2;      // Number of characters you want to retrieve
+
+    char number[num_chars + 1]; // Add 1 for null terminator
+    char *ptr = str + startPos;
+    for (int i = 0; i < num_chars && *ptr != '\0'; i++) {
+        number[i] = *ptr;
+        ptr++; // Move the pointer to the next character
+    }
+    number[num_chars] = '\0'; // Null terminate the string
+
+    int num = 0;
+    for (int i = 0; i < num_chars; i++) {
+        if(number[i] != '\0'){
+            num = num * 10 + (number[i]-'0');
+        }
+    }
+
+    return num;
 }

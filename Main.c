@@ -12,6 +12,10 @@ void getPath();
 void setPath(char* pathString);
 void changeDirectory(char* argv[51]);
 char* delimiters=" \t<>|;&\n";
+void addToHistory(char *command);
+void displayHistory();
+char* getCommandFromHistory(int index);
+
 
 int main(){
     char* const savedPath = getenv("PATH");
@@ -125,6 +129,9 @@ int internalCommand(char* argv[51]){
         changeDirectory(argv);
         return 1;
     }
+    else if(argv[0][0] == '!'){
+        getCommandFromHistory(argv);
+    }
     return 0;
 }
 
@@ -155,4 +162,32 @@ void changeDirectory(char* argv[51]){
             perror("cd");
         }
     }
+}
+
+void addToHistory(char *command){
+    if(historyCount < 20){
+        currentCommandNo++;
+        history[historyCount].commandNumber = currentCommandNo;
+        strcpy(history[historyCount].commandLine, command);
+        historyCount++;
+    }
+    else{
+        // loops through array moving each history member foward 
+        for(int i = 1; i<20 ; i++){
+            history[i - 1].commandNumber = history[i].commandNumber;
+            strcpy(history[i - 1].commandLine, history[i].commandLine);
+        }
+        history[19].commandNumber = currentCommandNo;
+        strcpy(history[19].commandLine, command);
+    }
+}
+
+void displayHistory(){
+    // goes through all the current commands and displays them
+    for(int i = 0; i < currentCommandNo; i++ ){
+        printf("%d: %s\n", (i+1), history[i].commandLine);
+    }
+}
+char* getCommandFromHistory(int index){
+
 }

@@ -36,8 +36,8 @@ void displayHistory();
 void getCommandFromHistory(char* command[51]);
 void Tokeniser(char *command);
 int getnum(int startPos, char str[51]);
-void saveHistory(CommandHistory history[20] history);
-CommandHistory[20] loadHistory(int historyCount);
+void saveHistory(CommandHistory history[20]);
+CommandHistory loadHistory(int historyCount);
 
 int main(){
     char* const savedPath = getenv("PATH");
@@ -50,30 +50,6 @@ int main(){
         getcwd(currentDir,150);
 
         //below is LOADING FUNCTION
-        CommandHistory[20] loadHistory(int historyCount){
-            FILE fp=fopen(fname, "r");
-            List p=new_list();
-            char buff[100];
-            if(fp==NULL){
-                return NULL;
-            }
-            while (fscanf(fp, "%99[^\t]", buff)==1){
-                char e=malloc(100*sizeof(char));
-                strcpy(e, buff);
-                if(strcmp(e, "\n")==0){
-                    push(p, "");
-                }
-                else{
-                    push(p, e);
-                }
-                int c=fgetc(fp);
-                if(c==EOF){
-                    break;
-                }
-            }
-            fclose(fp);
-            return p;
-        }
 
         //Prints the user promt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
@@ -90,16 +66,7 @@ int main(){
             printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
            
             //below is SAVING FUNCTION
-            void saveHistory(CommandHistory history[20] history){
-                FILE *f;
-                *f=fopen(".hist_list", "w");
-                int i=0;
-                while(history[i]!=NULL){
-                    fprintf(f, "%d/n", history[i]->commandNumber);
-                    fprintf(f, "%d/n", history[i]->commandLine);
-                }
-                fclose(f);
-            }
+            saveHistory(history);
 
             exit(EXIT_SUCCESS);
         }
@@ -332,4 +299,14 @@ int getnum(int startPos, char str[51]){
     }
 
     return num;
+}
+
+void saveHistory(CommandHistory history[20]){
+    FILE *f;
+    f=fopen(".hist_list", "w");
+    for(int i=0; i < historyCount; i++){
+        fprintf(f, "%d\n", history[i].commandNumber);
+        fprintf(f, "%s\n", history[i].commandLine);
+    }
+    fclose(f);
 }

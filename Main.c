@@ -36,7 +36,7 @@ void displayHistory();
 void getCommandFromHistory(char* command[51]);
 void Tokeniser(char *command);
 int getnum(int startPos, char str[51]);
-void saveHistory(CommandHistory history[20]);
+void saveHistory(CommandHistory history[20], int historyCount);
 CommandHistory loadHistory(int historyCount);
 
 int main(){
@@ -66,7 +66,7 @@ int main(){
             printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
            
             //below is SAVING FUNCTION
-            saveHistory(history);
+            saveHistory(history, historyCount);
 
             exit(EXIT_SUCCESS);
         }
@@ -301,7 +301,7 @@ int getnum(int startPos, char str[51]){
     return num;
 }
 
-void saveHistory(CommandHistory history[20]){
+void saveHistory(CommandHistory history[20], int historyCount){
     FILE *f=fopen(".hist_list", "w");
     for(int i=0; i < historyCount; i++){
         fprintf(f, "%d\n", history[i].commandNumber);

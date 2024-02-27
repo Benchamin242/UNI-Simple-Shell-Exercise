@@ -47,6 +47,9 @@ int main(){
         char currentDir[150];
         getcwd(currentDir,150);
 
+        //below is where function for loading will go
+
+
         //Prints the user promt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
 
@@ -60,6 +63,8 @@ int main(){
             printf("\n");
             setPath(savedPath);
             printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
+            //below is where function to save history will go
+
             exit(EXIT_SUCCESS);
         }
 

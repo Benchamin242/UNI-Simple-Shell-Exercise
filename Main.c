@@ -302,8 +302,7 @@ int getnum(int startPos, char str[51]){
 }
 
 void saveHistory(CommandHistory history[20]){
-    FILE *f;
-    f=fopen(".hist_list", "w");
+    FILE *f=fopen(".hist_list", "w");
     for(int i=0; i < historyCount; i++){
         fprintf(f, "%d\n", history[i].commandNumber);
         fprintf(f, "%s\n", history[i].commandLine);

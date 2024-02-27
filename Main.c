@@ -67,7 +67,7 @@ int main(){
         if (!(strcmp(input,"\n")==0))
         {
             //Tokenizes string and stores it
-            char commands[50][511] = {""};
+            //char commands[50][511] = {""};
 
             addToHistory(input);
 

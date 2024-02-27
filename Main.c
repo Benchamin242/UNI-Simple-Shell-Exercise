@@ -310,7 +310,7 @@ void saveHistory(CommandHistory history[20], int historyCount){
     else{
         for(int i=0; i < historyCount; i++){
             fprintf(f, "%d\n", history[i].commandNumber);
-            fprintf(f, "%s\n", history[i].commandLine);
+            fprintf(f, "%s", history[i].commandLine);
     }
     fclose(f);
     }

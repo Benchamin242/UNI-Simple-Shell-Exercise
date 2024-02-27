@@ -302,10 +302,16 @@ int getnum(int startPos, char str[51]){
 }
 
 void saveHistory(CommandHistory history[20], int historyCount){
-    FILE *f=fopen(".hist_list", "w");
-    for(int i=0; i < historyCount; i++){
-        fprintf(f, "%d\n", history[i].commandNumber);
-        fprintf(f, "%s\n", history[i].commandLine);
+    FILE *f;
+    f=fopen(".hist_list.txt", "w");
+    if(f==NULL){
+        perror("No file");
+    }
+    else{
+        for(int i=0; i < historyCount; i++){
+            fprintf(f, "%d\n", history[i].commandNumber);
+            fprintf(f, "%s\n", history[i].commandLine);
     }
     fclose(f);
+    }
 }

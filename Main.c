@@ -50,6 +50,7 @@ int main(){
         getcwd(currentDir,150);
 
         //below is LOADING FUNCTION
+        CommandHistory loadHistory(int historyCount);
 
         //Prints the user promt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
@@ -65,7 +66,7 @@ int main(){
             setPath(savedPath);
             printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
            
-            //below is SAVING FUNCTION
+            
             saveHistory(history, historyCount);
 
             exit(EXIT_SUCCESS);
@@ -315,3 +316,20 @@ void saveHistory(CommandHistory history[20], int historyCount){
     fclose(f);
     }
 }
+
+CommandHistory loadHistory(int historyCount){
+ FILE *f;
+    f=fopen(".hist_list.txt", "r");
+    if(f==NULL){
+        perror("Error Loading History");
+    }
+    else{
+        for(int i=0; i < historyCount; i++){
+            fscanf(f, "%d\n", &history[i].commandNumber);
+            fgets(history[i].commandLine, 512, f);
+        }
+        fclose(f);
+    }
+}
+
+ 

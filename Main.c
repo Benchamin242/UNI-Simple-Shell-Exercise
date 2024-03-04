@@ -37,7 +37,7 @@ void getCommandFromHistory(char* command[51]);
 void Tokeniser(char *command);
 int getnum(int startPos, char str[51]);
 void saveHistory(CommandHistory history[20], int historyCount);
-CommandHistory loadHistory(int historyCount);
+void loadHistory(int historyCount);
 
 int main(){
     char* const savedPath = getenv("PATH");
@@ -50,7 +50,7 @@ int main(){
         getcwd(currentDir,150);
 
         //below is LOADING FUNCTION
-        CommandHistory loadHistory(int historyCount);
+        loadHistory(historyCount);
 
         //Prints the user promt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
@@ -317,17 +317,21 @@ void saveHistory(CommandHistory history[20], int historyCount){
     }
 }
 
-CommandHistory loadHistory(int historyCount){
+void loadHistory(int historyCount){
  FILE *f;
     f=fopen(".hist_list.txt", "r");
     if(f==NULL){
         perror("Error Loading History");
     }
     else{
-        for(int i=0; i < historyCount; i++){
+        char buffer[512];
+        int i=0;
+        while(fgets(buffer, sizeof(buffer), f)!= NULL){
             fscanf(f, "%d\n", &history[i].commandNumber);
             fgets(history[i].commandLine, 512, f);
+            i++;
         }
+        historyCount=i;
         fclose(f);
     }
 }

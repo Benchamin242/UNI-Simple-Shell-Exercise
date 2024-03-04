@@ -40,12 +40,13 @@ int main(){
 
     chdir(getenv("HOME"));
 
+    //below is LOADING FUNCTION
+    loadHistory();
+
     while(1){
         //Gets the current working directory 
         char currentDir[150];
         getcwd(currentDir,150);
-        //below is LOADING FUNCTION
-        loadHistory();
 
         //Prints the user promt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
@@ -330,6 +331,7 @@ void loadHistory(){
         i++;
     }
     historyCount=i;
+    currentCommandNo = historyCount;
     fclose(f);
 }
 

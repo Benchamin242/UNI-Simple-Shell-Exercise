@@ -20,6 +20,18 @@ typedef struct{
     char commandLine[512];
 } CommandHistory;
 
+//struct to map alias to alias command using 2D array 
+typedef struct{
+    char alias[50];
+    char command[50];
+} Alias;
+
+Alias aliasList[20];
+
+
+
+
+
 CommandHistory history[20];
 int historyCount;
 
@@ -37,7 +49,10 @@ void getCommandFromHistory(char* command[51]);
 void Tokeniser(char *command);
 int getnum(int startPos, char str[51]);
 void saveHistory(CommandHistory history[20], int historyCount);
-CommandHistory loadHistory(int historyCount);
+void loadHistory(int historyCount);
+void addAlias(char* alias, char* command, Alias aliasList[20]);
+void removeAlias(char* alias, Alias aliasList[20]);
+
 
 int main(){
     char* const savedPath = getenv("PATH");
@@ -50,7 +65,7 @@ int main(){
         getcwd(currentDir,150);
 
         //below is LOADING FUNCTION
-        CommandHistory loadHistory(int historyCount);
+        void loadHistory(int historyCount);
 
         //Prints the user promt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
@@ -135,6 +150,23 @@ int internalCommand(char* argv[51]){
     else if(argv[0][0] == '!'){
         getCommandFromHistory(argv);
         return 1;
+    }
+    else if (strcmp(argv[0],"alias")==0){
+        addAlias(argv[1], argv[2], aliasList);
+        return 1;
+    }
+    else if (strcmp(argv[0],"unalias")==0){
+        removeAlias(argv[1], aliasList);
+        return 1;
+    }
+    
+    else{
+        for(int i = 0; i < 20; i++){
+            if(strcmp(aliasList[i].alias, argv[0]) == 0){
+                Tokeniser(aliasList[i].command);
+                return 1;
+            }
+        }
     }
     return 0;
 }
@@ -317,7 +349,7 @@ void saveHistory(CommandHistory history[20], int historyCount){
     }
 }
 
-CommandHistory loadHistory(int historyCount){
+void loadHistory(int historyCount){
  FILE *f;
     f=fopen(".hist_list.txt", "r");
     if(f==NULL){
@@ -330,6 +362,29 @@ CommandHistory loadHistory(int historyCount){
         }
         fclose(f);
     }
+}
+
+void addAlias(char* alias, char* command, Alias aliasList[20]){
+    for(int i = 0; i < 20; i++){
+        if(strcmp(aliasList[i].alias, "") == 0){
+            strcpy(aliasList[i].alias, alias);
+            strcpy(aliasList[i].command, command);
+            return;
+        }
+    }
+    printf("Error: No space for new alias\n");
+
+}
+
+void removeAlias(char* alias, Alias aliasList[20]){
+    for(int i = 0; i < 20; i++){
+        if(strcmp(aliasList[i].alias, alias) == 0){
+            strcpy(aliasList[i].alias, "");
+            strcpy(aliasList[i].command, "");
+            return;
+        }
+    }
+    printf("Error: No such alias\n");
 }
 
  

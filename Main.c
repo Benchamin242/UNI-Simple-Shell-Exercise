@@ -329,7 +329,7 @@ void loadHistory(int historyCount){
         while(fgets(buffer, sizeof(buffer), f)!= NULL){
            
             fscanf(f, "%d\n", &(history[i].commandNumber));
-             fscanf(f, "%s\n", &(history[i].commandLine));
+            fscanf(f, "%s\n", &(history[i].commandLine));
             i++;
         }
         historyCount=i;

@@ -299,6 +299,10 @@ int getnum(int startPos, char str[51]){
 }
 
 void saveHistory(CommandHistory history[20], int historyCount){
+    //Gets the current working directory 
+    char currentDir[150];
+    getcwd(currentDir,150);
+    chdir(getenv("HOME"));
     FILE *f;
     f=fopen(".hist_list.txt", "w");
     if(f==NULL){
@@ -310,6 +314,7 @@ void saveHistory(CommandHistory history[20], int historyCount){
         }
         fclose(f);
     }
+    chdir(currentDir);
 }
 
 void loadHistory(){

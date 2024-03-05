@@ -5,6 +5,8 @@
 #include <sys/types.h>  
 #include <sys/wait.h>  
 #include <errno.h>
+#include <ctype.h>
+#include "Alias.h"
 
 //Used to colour the output of the terminal
 #define setTerminalBlue "\x1b[34m"
@@ -20,13 +22,7 @@ typedef struct{
     char commandLine[512];
 } CommandHistory;
 
-//struct to map alias to alias command using 2D array 
-typedef struct{
-    char alias[50];
-    char command[50];
-} Alias;
 
-Alias aliasList[20];
 
 
 
@@ -50,8 +46,7 @@ void Tokeniser(char *command);
 int getnum(int startPos, char str[51]);
 void saveHistory(CommandHistory history[20], int historyCount);
 void loadHistory(int historyCount);
-void addAlias(char* alias, char* command, Alias aliasList[20]);
-void removeAlias(char* alias, Alias aliasList[20]);
+void trim(char *str);
 
 
 int main(){
@@ -95,10 +90,22 @@ int main(){
 
             addToHistory(input);
 
-            Tokeniser(input);
+            //if input contains ("&&"), split input into two commands and run them separately
+            if(strstr(input, "&&") != NULL){
+                char *token = strtok(input, "&&");
+                while(token != NULL){
+                   
+                    trim(token);
+                    printf("Running: %s\n", token);
+                    //Tokeniser(token);
+                    token = strtok(NULL, "&&");
+                }
+            }
+            else{
 
+                Tokeniser(input);
+            }
         }
-        
     }
 }
 
@@ -364,27 +371,25 @@ void loadHistory(int historyCount){
     }
 }
 
-void addAlias(char* alias, char* command, Alias aliasList[20]){
-    for(int i = 0; i < 20; i++){
-        if(strcmp(aliasList[i].alias, "") == 0){
-            strcpy(aliasList[i].alias, alias);
-            strcpy(aliasList[i].command, command);
-            return;
-        }
-    }
-    printf("Error: No space for new alias\n");
 
-}
+void trim(char *str) {
+    int i;
+    int begin = 0;
+    int end = strlen(str) - 1;
 
-void removeAlias(char* alias, Alias aliasList[20]){
-    for(int i = 0; i < 20; i++){
-        if(strcmp(aliasList[i].alias, alias) == 0){
-            strcpy(aliasList[i].alias, "");
-            strcpy(aliasList[i].command, "");
-            return;
-        }
+    while (isspace(str[begin])) {
+        begin++;
     }
-    printf("Error: No such alias\n");
+
+    while ((end >= begin) && isspace(str[end])) {
+        end--;
+    }
+
+    for (i = begin; i <= end; i++) {
+        str[i - begin] = str[i];
+    }
+
+    str[i - begin] = '\0';
 }
 
  

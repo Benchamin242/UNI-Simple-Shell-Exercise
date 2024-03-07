@@ -10,10 +10,6 @@
 #define setTerminalBlue "\x1b[34m"
 #define resetTerminalColour "\x1b[0m"
 
-//Used to colour the output of the terminal
-#define setTerminalBlue "\x1b[34m"
-#define resetTerminalColour "\x1b[0m"
-
 //Command history struct
 typedef struct{
     int commandNumber;
@@ -36,11 +32,16 @@ void displayHistory();
 void getCommandFromHistory(char* command[51]);
 void Tokeniser(char *command);
 int getnum(int startPos, char str[51]);
+void saveHistory(CommandHistory history[20], int historyCount);
+void loadHistory();
 
 int main(){
     char* const savedPath = getenv("PATH");
 
     chdir(getenv("HOME"));
+
+    //below is LOADING FUNCTION
+    loadHistory();
 
     while(1){
         //Gets the current working directory 
@@ -60,6 +61,10 @@ int main(){
             printf("\n");
             setPath(savedPath);
             printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
+           
+            
+            saveHistory(history, historyCount);
+
             exit(EXIT_SUCCESS);
         }
 
@@ -193,29 +198,29 @@ void displayHistory(){
 
 void getCommandFromHistory(char* command[51]) {
 
-int num;
+    int num;
 
-if (strcmp(command[0], "!!") == 0) {
-        if (historyCount > 0) {
-            
-            Tokeniser(history[historyCount - 1].commandLine); 
-            return;
-        } else {
-            printf("Error: No commands in history\n");
+    if (strcmp(command[0], "!!") == 0) {
+            if (historyCount > 0) {
+                
+                Tokeniser(history[historyCount - 1].commandLine); 
+                return;
+            } else {
+                printf("Error: No commands in history\n");
+                return;
+            }
+    }
+    else if (command[0][1] == 45) {
+        num = getnum(2, command[0]);
+        if (num <= 0 || num > historyCount) {
+            printf("Error: Invalid history index\n");
             return;
         }
-}
-else if (command[0][1] == 45) {
-    num = getnum(2, command[0]);
-    if (num <= 0 || num > historyCount) {
-        printf("Error: Invalid history index\n");
-        return;
-    }
-    
-    Tokeniser(history[historyCount - num].commandLine);
+        
+        Tokeniser(history[historyCount - num].commandLine);
 
-}
-else {
+    }
+    else {
     num = getnum(1, command[0]);
     if (num <= 0 || num > historyCount) {
         printf("Error: Invalid history index\n");
@@ -292,3 +297,47 @@ int getnum(int startPos, char str[51]){
 
     return num;
 }
+
+void saveHistory(CommandHistory history[20], int historyCount){
+    //Gets the current working directory 
+    char currentDir[150];
+    getcwd(currentDir,150);
+    chdir(getenv("HOME"));
+    FILE *f;
+    f=fopen(".hist_list.txt", "w");
+    if(f==NULL){
+        perror("No file");
+    }
+    else{
+        for(int i=0; i < historyCount; i++){
+            fprintf(f, "%s", history[i].commandLine);
+        }
+        fclose(f);
+    }
+    chdir(currentDir);
+}
+
+void loadHistory(){
+    FILE *f;
+    f=fopen(".hist_list.txt", "r");
+
+    //Creates the file if it doesn't exit
+    if(f==NULL){
+        f=fopen(".hist_list.txt", "w");
+        fclose(f);
+        f=fopen(".hist_list.txt", "r");
+    }
+
+    char buffer[512];
+    int i=historyCount;
+    while(fgets(buffer, sizeof(buffer), f)!= NULL){
+        strcpy(history[i].commandLine, buffer);
+        history[i].commandNumber = i;
+        i++;
+    }
+    historyCount=i;
+    currentCommandNo = historyCount;
+    fclose(f);
+}
+
+ 

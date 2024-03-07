@@ -20,7 +20,10 @@ void printAliases(){
     }
 }
 
-void addAlias(char* alias, char* command){
+void addAlias(char* argv[51]){
+    char* alias = argv[1];
+    char* command = argv[2];
+
     if((alias==NULL) | (command==NULL)){
         printf("alias: Command must have arguments 'alias' and 'command'\n");
         return;
@@ -30,6 +33,15 @@ void addAlias(char* alias, char* command){
         if(strcmp(aliasList[i].alias, "") == 0){
             strcpy(aliasList[i].alias, alias);
             strcpy(aliasList[i].command, command);
+
+            //Add the command arguments to the alias
+            for(int j = 3; j < 51; j++){
+                if(argv[j]!=NULL){
+                    strncat(aliasList[i].command, " ", strlen(argv[j]));
+                    strncat(aliasList[i].command, argv[j], strlen(argv[j]));
+                }
+            }
+
             return;
         }
     }

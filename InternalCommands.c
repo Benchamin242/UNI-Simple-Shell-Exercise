@@ -67,7 +67,7 @@ int internalCommand(char* argv[51]){
             return 1;
         }
 
-        addAlias(argv[1], argv[2]);
+        addAlias(argv);
         return 1;
     }
     else if (strcmp(argv[0],"unalias")==0){

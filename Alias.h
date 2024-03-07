@@ -7,7 +7,7 @@ typedef struct{
 } Alias;
 
 void printAliases();
-void addAlias(char* alias, char* command);
+void addAlias(char* argv[51]);
 void removeAlias(char* alias);
 int tryAlias(char* argv[51]);
 

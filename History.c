@@ -2,8 +2,10 @@
 #include "InternalCommands.h"
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>  
+#include <stdlib.h>
 
-int historyCount;
+int historyCount = 0;
 
 int currentCommandNo = 0;
 
@@ -18,7 +20,7 @@ void addToHistory(char* command){
             historyCount++;
         }
         else{
-            // loops through array moving each history member foward 
+            // loops through array moving each history member forward 
             for(int i = 1; i<20 ; i++){
                 history[i - 1].commandNumber = history[i].commandNumber;
                 strcpy(history[i - 1].commandLine, history[i].commandLine);
@@ -32,7 +34,10 @@ void addToHistory(char* command){
 void displayHistory(){
     // goes through all the current commands and displays them
     for(int i = 0; i < currentCommandNo; i++ ){
-        printf("%d: %s\n", (i+1), history[i].commandLine);
+        //if(history[i].commandLine[sizeof(history[i].commandLine)-1]=='\n'){
+            //history[i].commandLine[sizeof(history[i].commandLine)-1] = '\0';
+        //}
+        printf("%d: %s", (i+1), history[i].commandLine);
     }
 }
 
@@ -74,6 +79,10 @@ void getCommandFromHistory(char* command[51]) {
 }
 
 void saveHistory(){
+    //Gets the current working directory 
+    char currentDir[150];
+    getcwd(currentDir,150);
+    chdir(getenv("HOME"));
     FILE *f;
     f=fopen(".hist_list.txt", "w");
     if(f==NULL){
@@ -81,14 +90,15 @@ void saveHistory(){
     }
     else{
         for(int i=0; i < historyCount; i++){
-            fprintf(f, "%d\n", history[i].commandNumber);
             fprintf(f, "%s", history[i].commandLine);
         }
         fclose(f);
     }
+    chdir(currentDir);
 }
 
-void loadHistory(int historyCount){
+
+void loadHistory(){
     FILE *f;
     f=fopen(".hist_list.txt", "r");
     if(f==NULL){

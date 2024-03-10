@@ -41,6 +41,11 @@ void forkAndExec(char* argv[51]){
 
 //If argv contains an internal command, this executes it and returns 1. If not, returns 0.
 int internalCommand(char* argv[51]){
+
+    if(tryAlias(argv)){
+        return 1;
+    }
+
     if(strcmp(argv[0],"getpath")==0){
         getPath();
         return 1;
@@ -75,7 +80,7 @@ int internalCommand(char* argv[51]){
         return 1;
     }
 
-    return tryAlias(argv);
+    return 0;
 }
 
 //Runs the 'getpath' internal command

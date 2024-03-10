@@ -32,11 +32,8 @@ void addToHistory(char* command){
 }
 
 void displayHistory(){
-    // goes through all the current commands and displays them
+    //Goes through all the current commands and displays them
     for(int i = 0; i < currentCommandNo; i++ ){
-        //if(history[i].commandLine[sizeof(history[i].commandLine)-1]=='\n'){
-            //history[i].commandLine[sizeof(history[i].commandLine)-1] = '\0';
-        //}
         printf("%d: %s", (i+1), history[i].commandLine);
     }
 }
@@ -47,7 +44,6 @@ void getCommandFromHistory(char* command[51]) {
 
     if (strcmp(command[0], "!!") == 0) {
         if (historyCount > 0) {
-            
             Tokeniser(history[historyCount - 1].commandLine); 
             return;
         } else {

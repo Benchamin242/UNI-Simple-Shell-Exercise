@@ -111,4 +111,4 @@ void loadAlias(){
     }
     aliasCount=i;
     fclose(f);
-    }
+}

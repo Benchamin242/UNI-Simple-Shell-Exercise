@@ -93,15 +93,22 @@ void saveAlias(){
 
 void loadAlias(){
     FILE *f;
-    f=fopen(".hist_list.txt", "r");
+    f=fopen(".aliases.txt", "r");
+
+    //Creates the file if it doesn't exit
     if(f==NULL){
-        perror("Error Loading History");
-    }
-    else{
-        for(int i=0; i < aliasCount; i++){
-            fgets(aliasList[i].alias, 512, f);
-            fgets(aliasList[i].command, 512, f);
-        }
+        f=fopen(".aliases.txt", "w");
         fclose(f);
+        f=fopen(".aliases.txt", "r");
     }
-}
+
+    char buffer[512];
+    int i=aliasCount;
+    while(fgets(buffer, sizeof(buffer), f)!= NULL){
+        strcpy(aliasList[i].alias, buffer);
+        fgets(buffer, sizeof(buffer), f);
+        strcpy(aliasList[i].command, buffer);
+    }
+    aliasCount=i;
+    fclose(f);
+    }

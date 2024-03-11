@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>  
 #include "Alias.h"
 #include "InternalCommands.h"
 
 Alias aliasList[20];
+int aliasCount=0;
 
 void printAliases(){
-    int aliasCount = 0;
 
     for(int i = 0; i < 20; i++){
         if((strcmp(aliasList[i].alias,"") != 0) && (strcmp(aliasList[i].command,"") != 0)){
@@ -69,4 +70,22 @@ int tryAlias(char* argv[51]){
     }
 
     return 0;
+}
+
+void saveAlias(){
+    char currentDir[150];
+    getcwd(currentDir,150);
+    chdir(getenv("HOME"));
+    FILE *f;
+    f=fopen(".aliases.txt", "w");
+    if(f==NULL){
+        perror("No file");
+    }
+    else{
+        for(int i=0; i<aliasCount; i++){
+            fprintf(f, "%s", aliasList[i].alias);
+        }
+        fclose(f);
+    }
+    chdir(currentDir);
 }

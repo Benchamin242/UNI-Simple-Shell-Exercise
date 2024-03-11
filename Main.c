@@ -20,6 +20,8 @@ int main(){
 
     chdir(getenv("HOME"));
 
+    loadAlias();
+
     while(1){
         //Gets the current working directory 
         char currentDir[150];

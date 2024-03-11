@@ -110,6 +110,7 @@ void loadAlias(){
         strcpy(aliasList[i].alias, buffer);
         fgets(buffer, sizeof(buffer), f);
         strcpy(aliasList[i].command, buffer);
+        i++;
     }
     aliasCount=i;
     fclose(f);

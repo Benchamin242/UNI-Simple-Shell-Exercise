@@ -85,6 +85,7 @@ void saveAlias(){
     else{
         for(int i=0; i<aliasCount; i++){
             fprintf(f, "%s", aliasList[i].alias);
+            fprintf(f, "%s", aliasList[i].command);
         }
         fclose(f);
     }

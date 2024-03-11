@@ -90,3 +90,18 @@ void saveAlias(){
     }
     chdir(currentDir);
 }
+
+void loadAlias(){
+    FILE *f;
+    f=fopen(".hist_list.txt", "r");
+    if(f==NULL){
+        perror("Error Loading History");
+    }
+    else{
+        for(int i=0; i < aliasCount; i++){
+            fgets(aliasList[i].alias, 512, f);
+            fgets(aliasList[i].command, 512, f);
+        }
+        fclose(f);
+    }
+}

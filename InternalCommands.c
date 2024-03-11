@@ -45,8 +45,7 @@ int internalCommand(char* argv[51]){
     if(tryAlias(argv)){
         return 1;
     }
-
-    if(strcmp(argv[0],"getpath")==0){
+    else if(strcmp(argv[0],"getpath")==0){
         getPath();
         return 1;
     }

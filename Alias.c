@@ -13,7 +13,6 @@ void printAliases(){
     for(int i = 0; i < 20; i++){
         if((strcmp(aliasList[i].alias,"") != 0) && (strcmp(aliasList[i].command,"") != 0)){
             printf("Alias '%s' for command '%s'\n",aliasList[i].alias,aliasList[i].command);
-            aliasCount++;
         }
     }
 
@@ -43,6 +42,7 @@ void addAlias(char* argv[51]){
                     strncat(aliasList[i].command, argv[j], strlen(argv[j]));
                 }
             }
+            aliasCount++;
 
             return;
         }
@@ -56,6 +56,7 @@ void removeAlias(char* alias){
         if(strcmp(aliasList[i].alias, alias) == 0){
             strcpy(aliasList[i].alias, "");
             strcpy(aliasList[i].command, "");
+            aliasCount--;
             return;
         }
     }

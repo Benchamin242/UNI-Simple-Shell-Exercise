@@ -27,6 +27,7 @@ int main(){
 
         //below is LOADING FUNCTION
         void loadHistory(int historyCount);
+        
 
         //Prints the user promt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
@@ -44,6 +45,7 @@ int main(){
            
             
             saveHistory();
+            saveAlias();
 
             exit(EXIT_SUCCESS);
         }

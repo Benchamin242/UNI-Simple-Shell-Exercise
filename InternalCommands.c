@@ -46,7 +46,11 @@ int internalCommand(char* argv[51]){
         return 1;
     }
     else if(strcmp(argv[0],"getpath")==0){
-        getPath(argv);
+        if(argv[1]!=NULL){
+            printf("getpath: No arguments expected\n");
+            return 1;
+        }
+        getPath();
         return 1;
     }
     else if(strcmp(argv[0],"setpath")==0){
@@ -83,7 +87,7 @@ int internalCommand(char* argv[51]){
 }
 
 //Runs the 'getpath' internal command
-void getPath(char* argv[51]){
+void getPath(){
     printf("%s\n",getenv("PATH"));
 }
 
@@ -96,7 +100,7 @@ void setPath(char* pathString){
 
     setenv("PATH",pathString,1);
     printf("PATH set to: ");
-    getPath(NULL);
+    getPath();
 }
 
 //Change directory function

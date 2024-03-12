@@ -46,7 +46,7 @@ int internalCommand(char* argv[51]){
         return 1;
     }
     else if(strcmp(argv[0],"getpath")==0){
-        getPath();
+        getPath(argv);
         return 1;
     }
     else if(strcmp(argv[0],"setpath")==0){
@@ -83,7 +83,7 @@ int internalCommand(char* argv[51]){
 }
 
 //Runs the 'getpath' internal command
-void getPath(){
+void getPath(char* argv[51]){
     printf("%s\n",getenv("PATH"));
 }
 
@@ -96,7 +96,7 @@ void setPath(char* pathString){
 
     setenv("PATH",pathString,1);
     printf("PATH set to: ");
-    getPath();
+    getPath(NULL);
 }
 
 //Change directory function
@@ -155,27 +155,6 @@ void Tokeniser(char *command) {
     argv[argCount] = NULL; 
 
     forkAndExec(argv);
-}
-
-int getnum(int startPos, char str[51]){
-    int num_chars = 2;      // Number of characters you want to retrieve
-
-    char number[num_chars + 1]; // Add 1 for null terminator
-    char *ptr = str + startPos;
-    for (int i = 0; i < num_chars && *ptr != '\0'; i++) {
-        number[i] = *ptr;
-        ptr++; // Move the pointer to the next character
-    }
-    number[num_chars] = '\0'; // Null terminate the string
-
-    int num = 0;
-    for (int i = 0; i < num_chars; i++) {
-        if(number[i] != '\0'){
-            num = num * 10 + (number[i]-'0');
-        }
-    }
-
-    return num;
 }
 
 void trim(char *str) {

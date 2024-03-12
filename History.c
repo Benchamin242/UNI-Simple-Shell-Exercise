@@ -11,6 +11,27 @@ int currentCommandNo = 0;
 
 CommandHistory history[20];
 
+int getnum(int startPos, char str[51]){
+    int num_chars = 2;      // Number of characters you want to retrieve
+
+    char number[num_chars + 1]; // Add 1 for null terminator
+    char *ptr = str + startPos;
+    for (int i = 0; i < num_chars && *ptr != '\0'; i++) {
+        number[i] = *ptr;
+        ptr++; // Move the pointer to the next character
+    }
+    number[num_chars] = '\0'; // Null terminate the string
+
+    int num = 0;
+    for (int i = 0; i < num_chars; i++) {
+        if(number[i] != '\0'){
+            num = num * 10 + (number[i]-'0');
+        }
+    }
+
+    return num;
+}
+
 void addToHistory(char* command){
     if(command[0] != '!') {
         if(historyCount < 20){

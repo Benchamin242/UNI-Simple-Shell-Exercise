@@ -27,7 +27,7 @@ void forkAndExec(char* argv[51]){
 
             if(errno!=0){
                 perror(argv[0]);  
-                exit(EXIT_FAILURE); 
+                _exit(EXIT_FAILURE); 
             }
 
             exit(EXIT_SUCCESS); 

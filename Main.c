@@ -42,9 +42,9 @@ int main(){
         if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
             free(input);
             printf("\n");
-            setPath(savedPath);
+            char* argv[51] = {"setpath",savedPath};
+            setPath(argv);
             printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
-           
             
             saveHistory();
             saveAlias();

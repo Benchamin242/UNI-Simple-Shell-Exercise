@@ -54,7 +54,7 @@ int internalCommand(char* argv[51]){
         return 1;
     }
     else if(strcmp(argv[0],"setpath")==0){
-        setPath(argv[1]);
+        setPath(argv);
         return 1;
     }
     else if(strcmp(argv[0],"cd")==0){
@@ -92,9 +92,15 @@ void getPath(){
 }
 
 //Runs the 'setpath' internal command
-void setPath(char* pathString){
+void setPath(char* argv[51]){
+    char* pathString = argv[1];
     if(pathString == NULL){
         printf("setpath: No such file or directory\n");
+        return;
+    }
+
+    if(argv[2]!=NULL){
+        printf("setpath: No arguments expected\n");
         return;
     }
 

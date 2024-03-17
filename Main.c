@@ -20,18 +20,17 @@ int main(){
 
     chdir(getenv("HOME"));
 
-    loadAlias();
+    loadAlias();        
+    
+    //below is LOADING FUNCTION
+    loadHistory();
 
     while(1){
         //Gets the current working directory 
         char currentDir[150];
         getcwd(currentDir,150);
 
-        //below is LOADING FUNCTION
-        void loadHistory(int historyCount);
-        
-
-        //Prints the user promt
+        //Prints the user prompt
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
 
         //Gets the user input

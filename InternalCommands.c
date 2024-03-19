@@ -118,6 +118,9 @@ void changeDirectory(char* argv[51]){
             perror("cd");
         }
     }
+    else if(argv[2]!=NULL){
+        printf("cd: Only one argument expetced\n");
+    }
     else{
         if(chdir(argv[1])!=0) {
             //if cd was unsuccessful error is printed

@@ -38,6 +38,10 @@ void addToHistory(char* command){
             currentCommandNo++;
             history[historyCount].commandNumber = currentCommandNo;
             strcpy(history[historyCount].commandLine, command);
+            char lastChar = history[historyCount].commandLine[strlen(history[historyCount].commandLine)-1];
+            if(lastChar != '\n'){
+                history[historyCount].commandLine[strlen(history[historyCount].commandLine)] = '\n';
+            }
             historyCount++;
         }
         else{
@@ -48,6 +52,10 @@ void addToHistory(char* command){
             }
             history[19].commandNumber = currentCommandNo;
             strcpy(history[19].commandLine, command);
+            char lastChar = history[19].commandLine[strlen(history[19].commandLine)-1];
+            if(lastChar != '\n'){
+                history[19].commandLine[strlen(history[19].commandLine)] = '\n';
+            }
         }
     }
 }

@@ -80,27 +80,24 @@ void saveAlias(){
     chdir(getenv("HOME"));
     FILE *f;
     f=fopen(".aliases.txt", "w");
-    if(f==NULL){
-        perror("No file");
+
+    for(int i=0; i<aliasCount; i++){
+        fprintf(f, "%s,%s\n", aliasList[i].alias,aliasList[i].command);
     }
-    else{
-        for(int i=0; i<aliasCount; i++){
-            fprintf(f, "%s,%s\n", aliasList[i].alias,aliasList[i].command);
-        }
-        fclose(f);
-    }
+    fclose(f);
+    
     chdir(currentDir);
 }
 
 void loadAlias(){
     FILE *f;
-    f=fopen(".aliases.txt", "r");
+    char* aliasFileName = ".aliases.txt";
+    f=fopen(aliasFileName, "r");
 
     //Creates the file if it doesn't exit
     if(f==NULL){
-        f=fopen(".aliases.txt", "w");
-        fclose(f);
-        f=fopen(".aliases.txt", "r");
+        printf("No alias file found\n");
+        return;
     }
 
     char buffer[512];

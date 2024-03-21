@@ -109,16 +109,13 @@ void saveHistory(){
     getcwd(currentDir,150);
     chdir(getenv("HOME"));
     FILE *f;
-    f=fopen(".hist_list.txt", "w");
-    if(f==NULL){
-        perror("No file");
+    char* historyFileName = ".hist_list.txt";
+    f = fopen(historyFileName, "w");
+    for(int i=0; i < 20; i++){
+        fprintf(f, "%s", history[i].commandLine);
     }
-    else{
-        for(int i=0; i < 20; i++){
-            fprintf(f, "%s", history[i].commandLine);
-        }
-        fclose(f);
-    }
+    fclose(f);
+    
     chdir(currentDir);
 }
 
@@ -130,26 +127,25 @@ void loadHistory(){
 
     FILE *f;
     f=fopen(".hist_list.txt", "r");
-    if(f==NULL){
-        perror("Error Loading History");
-    }
-    else{
-        for(int i=0; i < 19; i++){
-            char test[512] = "";
-            fgets(test, 512, f);
-            //printf("%s\n",test);
-            if(strcmp(test,"")==0){
-                fclose(f);
-                return;
-            }
-            strcpy(history[i].commandLine,test);
-            history[i].commandNumber = i;
-            //printf("%s\n",history[i].commandLine);
-            currentCommandNo++;
-        }
 
-        fclose(f);
+    if(f==NULL){
+        printf("No history file found\n");
+        return;
     }
+
+    for(int i=0; i < 19; i++){
+        char test[512] = "";
+        fgets(test, 512, f);
+        if(strcmp(test,"")==0){
+            fclose(f);
+            return;
+        }
+        strcpy(history[i].commandLine,test);
+        history[i].commandNumber = i;
+        currentCommandNo++;
+    }
+
+    fclose(f);
 
     chdir(currentDir);
 }

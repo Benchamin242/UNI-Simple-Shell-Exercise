@@ -52,7 +52,7 @@ void addAlias(char* argv[51]){
 }
 
 void removeAlias(char* alias){
-    for(int i = 0; i < 20; i++){
+    for(int i = 0; i < aliasCount; i++){
         if(strcmp(aliasList[i].alias, alias) == 0){
             strcpy(aliasList[i].alias, "");
             strcpy(aliasList[i].command, "");

@@ -85,7 +85,7 @@ void saveAlias(){
     }
     else{
         for(int i=0; i<aliasCount; i++){
-            fprintf(f, "%s ", aliasList[i].alias);
+            fprintf(f, "%s\n", aliasList[i].alias);
             fprintf(f, "%s\n", aliasList[i].command);
         }
         fclose(f);
@@ -107,6 +107,7 @@ void loadAlias(){
     char buffer[512];
     int i=aliasCount;
     while(fgets(buffer, sizeof(buffer), f)!= NULL){
+        fgets(buffer, sizeof(buffer), f);
         strcpy(aliasList[i].alias, buffer);
         fgets(buffer, sizeof(buffer), f);
         strcpy(aliasList[i].command, buffer);

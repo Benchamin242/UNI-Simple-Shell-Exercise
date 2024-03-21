@@ -62,7 +62,7 @@ void addToHistory(char* command){
 
 void displayHistory(){
     //Goes through all the current commands and displays them
-    for(int i = 0; i < currentCommandNo; i++ ){
+    for(int i = 0; i < currentCommandNo-1; i++ ){
         printf("%d: %s", (i+1), history[i].commandLine);
     }
 }

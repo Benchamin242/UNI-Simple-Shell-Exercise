@@ -137,7 +137,7 @@ void loadHistory(){
         for(int i=0; i < 19; i++){
             char test[512] = "";
             fgets(test, 512, f);
-            printf("%s\n",test);
+            //printf("%s\n",test);
             if(strcmp(test,"")==0){
                 fclose(f);
                 return;

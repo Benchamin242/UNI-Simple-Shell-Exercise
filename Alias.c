@@ -85,8 +85,7 @@ void saveAlias(){
     }
     else{
         for(int i=0; i<aliasCount; i++){
-            fprintf(f, "%s\n", aliasList[i].alias);
-            fprintf(f, "%s\n", aliasList[i].command);
+            fprintf(f, "%s,%s\n", aliasList[i].alias,aliasList[i].command);
         }
         fclose(f);
     }
@@ -106,11 +105,24 @@ void loadAlias(){
 
     char buffer[512];
     int i=aliasCount;
-    while(fgets(buffer, sizeof(buffer), f)!= NULL){
-        fgets(buffer, sizeof(buffer), f);
-        strcpy(aliasList[i].alias, buffer);
-        fgets(buffer, sizeof(buffer), f);
-        strcpy(aliasList[i].command, buffer);
+
+    while (fgets(buffer, sizeof(buffer), f)) {
+        char *token = strtok(buffer, ",");
+        int tokenCount = 0;
+        while (token) { 
+            if(tokenCount==0){
+                strcpy(aliasList[i].alias, token);
+            }
+            else{
+                strcpy(aliasList[i].command, token);
+            }
+            token = strtok(NULL, ",");
+            tokenCount++;
+        }
+        char lastChar = aliasList[i].command[strlen(aliasList[i].command)-1];
+        if(lastChar == '\n'){
+            aliasList[i].command[strlen(aliasList[i].command)-1] = '\0';
+        }
         i++;
     }
     aliasCount=i;

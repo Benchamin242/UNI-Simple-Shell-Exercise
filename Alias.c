@@ -66,7 +66,15 @@ void removeAlias(char* alias){
 int tryAlias(char* argv[51]){
     for(int i = 0; i < 20; i++){
         if(strcmp(aliasList[i].alias, argv[0]) == 0){
-            Tokeniser(aliasList[i].command);
+            char command[512];
+            strcpy(command, aliasList[i].command);
+            for(int j = 1; j < 51; j++){
+                if(argv[j]!=NULL){
+                    strncat(command, " ", strlen(argv[j]));
+                    strncat(command, argv[j], strlen(argv[j]));
+                }
+            }
+            Tokeniser(command);
             return 1;
         }
     }

@@ -63,7 +63,7 @@ void addToHistory(char* command){
 void displayHistory(){
     //Goes through all the current commands and displays them
     for(int i = 0; i < currentCommandNo-1; i++ ){
-        printf("%d: %s", (i+1), history[i].commandLine);
+        printf("%2d  %s", (i+1), history[i].commandLine);
     }
 }
 
@@ -143,6 +143,7 @@ void loadHistory(){
         strcpy(history[i].commandLine,test);
         history[i].commandNumber = i;
         currentCommandNo++;
+        historyCount = i;
     }
 
     fclose(f);

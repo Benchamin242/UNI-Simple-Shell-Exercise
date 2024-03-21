@@ -52,28 +52,14 @@ int main(){
         }
 
         //Makes sure the input isn't just a '\n'
-        if (!(strcmp(input,"\n")==0))
+        if (strcmp(input,"\n")!=0)
         {
             //Tokenizes string and stores it
-            //char commands[50][511] = {""};
 
             addToHistory(input);
 
-            //if input contains ("&&"), split input into two commands and run them separately
-            if(strstr(input, "&&") != NULL){
-                char *token = strtok(input, "&&");
-                while(token != NULL){
-                   
-                    trim(token);
-                    printf("Running: %s\n", token);
-                    //Tokeniser(token);
-                    token = strtok(NULL, "&&");
-                }
-            }
-            else{
-
-                Tokeniser(input);
-            }
+            Tokeniser(input);
+            
         }
     }
 }

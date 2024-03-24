@@ -22,7 +22,6 @@ int main(){
 
     loadAlias();        
     
-    //below is LOADING FUNCTION
     loadHistory();
 
     while(1){
@@ -34,15 +33,16 @@ int main(){
         printf(setTerminalBlue"%s|-o-| "resetTerminalColour,currentDir);
 
         //Gets the user input
-        char* input=(char *)malloc(512 * sizeof(char));
+        char input[512];
         char* fgetsResult = fgets(input, 511, stdin);
         
         //Exits the shell when CTRL+D or 'exit' is entered
         if((fgetsResult==NULL)|(strcmp(input,"exit\n")==0)){
-            free(input);
             printf("\n");
             char* argv[51] = {"setpath",savedPath};
             setPath(argv);
+            saveHistory();
+            saveAlias();
             printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
 
             exit(EXIT_SUCCESS);
@@ -53,8 +53,6 @@ int main(){
         {
             addToHistory(input);
             Tokeniser(input);
-            saveHistory();
-            saveAlias();
         }
     }
 }

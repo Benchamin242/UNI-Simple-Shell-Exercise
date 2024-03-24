@@ -62,11 +62,21 @@ int internalCommand(char* argv[51]){
         return 1;
     }
     else if(strcmp(argv[0],"history")==0){
-        displayHistory();
+        if(argv[1] == NULL){
+            displayHistory();
+        }
+        else{
+            printf("history: No arguments expected\n");
+        }
         return 1;
     }
     else if(argv[0][0] == '!'){
-        getCommandFromHistory(argv);
+        if(argv[1] == NULL){
+            getCommandFromHistory(argv);
+        }
+        else{
+            printf("%s: No arguments expected\n",argv[0]);
+        }
         return 1;
     }
     else if (strcmp(argv[0],"alias")==0){

@@ -44,9 +44,6 @@ int main(){
             char* argv[51] = {"setpath",savedPath};
             setPath(argv);
             printf(setTerminalBlue"Goodbye!\n"resetTerminalColour);
-            
-            saveHistory();
-            saveAlias();
 
             exit(EXIT_SUCCESS);
         }
@@ -54,12 +51,10 @@ int main(){
         //Makes sure the input isn't just a '\n'
         if (strcmp(input,"\n")!=0)
         {
-            //Tokenizes string and stores it
-
             addToHistory(input);
-
             Tokeniser(input);
-            
+            saveHistory();
+            saveAlias();
         }
     }
 }

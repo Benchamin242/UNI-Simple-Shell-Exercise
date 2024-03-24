@@ -8,6 +8,8 @@
 Alias aliasList[20];
 int aliasCount=0;
 
+int checkCycle(char* alias, char* command);
+
 void printAliases(){
 
     for(int i = 0; i < 20; i++){
@@ -32,6 +34,12 @@ void addAlias(char* argv[51]){
 
     for(int i = 0; i < 20; i++){
         if(strcmp(aliasList[i].alias, "") == 0){
+            //Checks if a cycle is being created
+            if(!checkCycle(alias, command)){
+                printf("Cycle detected, unable to create alias\n");
+                return;
+            }
+            
             strcpy(aliasList[i].alias, alias);
             strcpy(aliasList[i].command, command);
 
@@ -132,4 +140,16 @@ void loadAlias(){
     }
     aliasCount=i;
     fclose(f);
+}
+
+int checkCycle(char* alias, char* command){
+    for(int i = 0; i < 20; i++){
+        if(strcmp(command, aliasList[i].alias) == 0){
+            if(strcmp(alias, aliasList[i].command) == 0){
+                return 0;
+            }
+            return checkCycle(alias, aliasList[i].command);
+        }
+    }
+    return 1;
 }

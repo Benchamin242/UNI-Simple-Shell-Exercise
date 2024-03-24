@@ -73,6 +73,7 @@ void getCommandFromHistory(char* command[51]) {
 
     if (strcmp(command[0], "!!") == 0) {
         if (historyCount > 0) {
+            strcat(history[historyCount - 1].commandLine, "\n");
             Tokeniser(history[historyCount - 1].commandLine); 
             return;
         } else {

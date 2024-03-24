@@ -130,7 +130,6 @@ void changeDirectory(char* argv[51]){
 }
 
 void Tokeniser(char *command) {
-    //char* commands =(char *)malloc(512 * sizeof(char));
     char commands[50][511] = {""}; 
 
     char *token = strtok(command, delimiters);

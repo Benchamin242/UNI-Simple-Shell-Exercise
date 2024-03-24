@@ -11,7 +11,7 @@ int currentCommandNo = 0;
 
 CommandHistory history[20];
 
-int getnum(int startPos, char str[51]){
+int getHistoryNumber(int startPos, char str[51]){
     int num_chars = 2;      // Number of characters you want to retrieve
 
     char number[num_chars + 1]; // Add 1 for null terminator
@@ -73,32 +73,38 @@ void getCommandFromHistory(char* command[51]) {
 
     if (strcmp(command[0], "!!") == 0) {
         if (historyCount > 0) {
-            strcat(history[historyCount - 1].commandLine, "\n");
-            Tokeniser(history[historyCount - 1].commandLine); 
+            char command[51];
+            strcpy(command,history[historyCount - 1].commandLine);  
+            addToHistory(command);          
+            Tokeniser(command); 
             return;
         } else {
             printf("Error: No commands in history\n");
             return;
         }
     }
-    else if (command[0][1] == 45) {
-        num = getnum(2, command[0]);
+    else if (command[0][1] == '-') {
+        num = getHistoryNumber(2, command[0]);
         if (num <= 0 || num > historyCount) {
             printf("Error: Invalid history index\n");
             return;
         }
-        
-        Tokeniser(history[historyCount - num].commandLine);
+        char command[51];
+        strcpy(command,history[historyCount-num-1].commandLine);
+        addToHistory(command);
+        Tokeniser(command);
 
     }
     else {
-        num = getnum(1, command[0]);
+        num = getHistoryNumber(1, command[0]);
         if (num <= 0 || num > historyCount) {
             printf("Error: Invalid history index\n");
             return;
         }
-        
-        Tokeniser(history[num - 1].commandLine); 
+        char command[51];
+        strcpy(command,history[num - 1].commandLine);
+        addToHistory(command);
+        Tokeniser(command); 
     }
         
     return; 

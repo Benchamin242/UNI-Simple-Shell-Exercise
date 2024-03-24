@@ -100,7 +100,7 @@ void setPath(char* argv[51]){
     }
 
     if(argv[2]!=NULL){
-        printf("setpath: No arguments expected\n");
+        printf("setpath: Only one argument expected\n");
         return;
     }
 

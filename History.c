@@ -140,15 +140,15 @@ void loadHistory(){
         return;
     }
 
-    for(int i=0; i < 19; i++){
-        char test[512] = "";
-        fgets(test, 512, f);
-        if(strcmp(test,"")==0){
+    for(int i=0; i < 20; i++){
+        char line[512] = "";
+        fgets(line, 512, f);
+        if(strcmp(line,"")==0){
             fclose(f);
             return;
         }
-        strcpy(history[i].commandLine,test);
-        history[i].commandNumber = i;
+        strcpy(history[i].commandLine,line);
+        history[i].commandNumber = i+1;
         currentCommandNo++;
         historyCount = i;
     }

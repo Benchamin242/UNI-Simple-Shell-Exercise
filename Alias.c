@@ -95,7 +95,7 @@ void saveAlias(){
     getcwd(currentDir,150);
     chdir(getenv("HOME"));
     FILE *f;
-    f=fopen(".aliases.txt", "w");
+    f=fopen(".aliases", "w");
 
     for(int i=0; i<aliasCount; i++){
         fprintf(f, "%s,%s\n", aliasList[i].alias,aliasList[i].command);
@@ -107,7 +107,7 @@ void saveAlias(){
 
 void loadAlias(){
     FILE *f;
-    char* aliasFileName = ".aliases.txt";
+    char* aliasFileName = ".aliases";
     f=fopen(aliasFileName, "r");
 
     //Creates the file if it doesn't exit

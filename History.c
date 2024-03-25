@@ -116,7 +116,7 @@ void saveHistory(){
     getcwd(currentDir,150);
     chdir(getenv("HOME"));
     FILE *f;
-    char* historyFileName = ".hist_list.txt";
+    char* historyFileName = ".hist_list";
     f = fopen(historyFileName, "w");
     for(int i=0; i < 20; i++){
         fprintf(f, "%s", history[i].commandLine);
@@ -133,7 +133,7 @@ void loadHistory(){
     chdir(getenv("HOME"));
 
     FILE *f;
-    f=fopen(".hist_list.txt", "r");
+    f=fopen(".hist_list", "r");
 
     if(f==NULL){
         printf("No history file found\n");

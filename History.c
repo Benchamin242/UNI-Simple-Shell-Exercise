@@ -5,6 +5,13 @@
 #include <unistd.h>  
 #include <stdlib.h>
 
+//Command history struct
+typedef struct{
+    int commandNumber;
+    char commandLine[512];
+} CommandHistory;
+
+
 int historyCount = 0;
 
 int currentCommandNo = 0;
@@ -156,4 +163,13 @@ void loadHistory(){
     fclose(f);
 
     chdir(currentDir);
+}
+
+void removeHistory(){
+    for(int i =0; i < 20; i++){
+        strcpy(history[i].commandLine, "");
+        history[i].commandNumber = 0;
+    }
+    currentCommandNo = 0;
+    historyCount = 0;
 }

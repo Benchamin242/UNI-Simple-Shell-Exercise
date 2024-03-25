@@ -92,6 +92,10 @@ int internalCommand(char* argv[51]){
         removeAlias(argv[1]);
         return 1;
     }
+    else if (strcmp(argv[0],"remove")==0 && strcmp(argv[1],"history")==0){
+        removeHistory();
+        return 1;
+    }
 
     return 0;
 }
